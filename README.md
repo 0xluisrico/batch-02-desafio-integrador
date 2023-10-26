@@ -4,7 +4,7 @@
 
 Estás a punto de lanzar una colección de activos digitales en la red más popular para NFTs: Polygon (`Mumbai`). Para lograr ello se usará un contrato que implementa el estándar ERC721 con una cantidad de 2000 NFTs. Las estrategias para acuñación incluyen airdrop con lista blanca y compra directa.
 
-Ethereum es la red más líquida en términos financieros. Hasta el día de hoy tiene el más alto total valor capturado (total value locked - TVL) en comparación con otros Blockchain. Tus clientes poseen sus dólares cripto (`USDC`) aquí. Dicha razón te motivó a crear una capa intermedia para poder realizar operaciones cross-chain.
+Ethereum es la red más líquida en términos financieros. Hasta el día de hoy tiene el más alto total valor capturado (total value locked - TVL) en comparación con otros otros Blockchain. Tus clientes poseen sus dólares cripto (`USDC`) aquí. Dicha razón te motivó a crear una capa intermedia para poder realizar operaciones cross-chain.
 
 Como parte de este lanzamiento, decidiste crear tu propio token llamado `BBites Token - BBTKN`. Lograr que este token adquiera un valor con el tiempo será clave para darle sostenibilidad al proyecto. Por eso decidiste que este token jugará un papel crucial al momento de adquirir los NFTs.
 
@@ -12,7 +12,7 @@ Una porción de los NFTs podrán ser comprados directamente en Ethereum (`Goerli
 
 ## Estrategias de acuñación de NFTs
 
-Existen tres maneras de adquirir los activos digitales y son las siguientes:
+Existen tres maneras de adquirir los activos digitales en la red Polygon (`Mumbai`) y son las siguientes:
 
 1. **Usando `BBTKN` o `USDC`**: Las compradores pueden dirigirse al contrato de compra y venta de NFTs (`Public Sale`) en la red Ethereum (`Goerli`) y usar los tokens `BBTKN` o `USDC` para adquirir NFTs. Los únicos tokens a la venta en esta modalidad van del id `0` al `699` (inclusivo) y tienen diferentes rangos de precio. Los tokens `BBTKN` se deducen de la billeterá del comprador y se transfieren al contrato `Public Sale`. Se dispara un evento para que en Mumbai sea acuñado el NFT con el id que acaba de ser comprado. Si se usa `USDC` para pagar, internamente el contrato `Public Sale` primero convierte el `USDC` a una cantidad exacta de `BBTKN` (usando Uniswap) para pagar por el NFT.
 2. **Usando `ether`**: Los tokens que van del id `700` al `999` (inclusivo) pueden ser comprados depositando `0.01` ether al contrato de `Public Sale`. Si el usuario llama al método `purchaseWithEtherAndId(uint256 _id) public` del contrato `Public Sale`, el usuario puede comprar dicho _id del rango mencionado si está disponible. Sin embargo, el usuario también puede optar por enviar `ether` a `Public Sale` sin ejecutar ningún metodo. En dicho caso, de manera aleatoria el contrato escoge un id disponible en el rango `700` a `999` (inclusivo). Este id que es adquirido mediante `ether` se envía en un evento a la red Polygon (`Mumbai`) para que se acuñe dicho NFT.
@@ -82,7 +82,7 @@ Para asegurar la conveniencia del usuario y éxito de tu proyecto, has creado un
 
 * Este contrato de `Public Sale` se publica en Ethereum (`Goerli`). Sirve como intermediario para poder realizar el pago para adquirir NFTs.
 
-* La comunicación entre el contrato de `Public Sale` y el contrato de NFTs se dará a través de Open Zeppelin Defender. El contrato de `Public Sale` emite eventos que serán escuchados por Open Zeppelin Defender, que a su vez ordenará al contrato de NFT en Polygon (`Mumbai`) de acuñar un determinado NFT.
+* La comunicación entre el contrato de `Public Sale` y el contrato de NFTs se dará a través de Open Zeppelin Defender. El contrato de Compra y Venta emite eventos que serán escuchados por Open Zeppelin Defender, que a su vez ordenará al contrato de NFT en Polygon (`Mumbai`) de acuñar un determinado NFT.
 
 * Los ids para la venta usando `BBTKN` o `USDC` van del `0` hasta el `699` y tienen diferentes rangos de precio.
 
@@ -104,7 +104,7 @@ Para asegurar la conveniencia del usuario y éxito de tu proyecto, has creado un
 
 * La primera manera de compra es usando los `BBTKN` tokens. El método a usar es `purchaseWithTokens(uint256 _id)` y el usuario escoge el id a comprar y se emite el evento. Estos tokens se transfieren al contrato `Public Sale`. Aplica para ids en el rango `0 - 699`.
 
-* La segunda manera de compra es usando `USDC`. El método a usar es `purchaseWithUSDC(uint256 _id)` y el usuario escoge el id a comprar y se emite el evento. Internamente, en este método se usa el pool de liquidez para intercambiar los `USDC` por una cantidad exacta de `BBTKN`. Aplica para ids en el rango `0 - 699`.  Dado que no se sabe la cantidad de `USDC` a depositar, se sugiere dar el `approve` de un monto seguro por parte del usuario. Este método tiene que dar el vuelto del `USDC` que no se llegó a usar en la compra.
+* La segunda manera de compra es usando `USDC`. El método a usar es `purchaseWithUSDC(uint256 _id)` y el usuario escoge el id a comprar y se emite el evento. Internamente, en este método se usa el pool de liquidez para intercambiar los `USDC` por una cantidad exacta de `BBTKN`. Aplica para ids en el rango `0 - 699`.  Dado que no se sabe la cantidad de `USDC` a depositar, se sugiere dar el `approve` de un monton seguro. Este método tiene que dar el vuelto del `USDC` que no se llegó a usar en la compra.
 
   **BONUS:** Para obtener un estimado de cuántos `USDC` se necesitan para comprar una cantidad exacta de `BBTKN`, revisar [getAmountIn](https://docs.uniswap.org/contracts/v2/reference/smart-contracts/library#getamountin) de Uniswap. El usuario, antes de comprar bajo este método, puede consultar `getAmountIn` y dar el `approve` en dicha cantidad de `USDC` estimada. Exponer `getAmountIn` en este contrato.
 
@@ -114,9 +114,9 @@ Para asegurar la conveniencia del usuario y éxito de tu proyecto, has creado un
 
 * El evento que se emite luego de realizar cualquier compra tiena la siguiente forma: `event PurchaseNftWithId(address account, uint256 id)`.
 
-* El método llamado `withdrawEther() public onlyRole(DEFAULT_ADMIN_ROLE)` permite a cualquier admin transferirse el `ether` que fue depositado a este contrato.
+* El método llamado `withdrawEther() public onlyRole(DEFAULT_ADMIN)` permite a cualquier admin transferirse el `ether` que fue depositado a este contrato.
 
-* El método llamado `withdrawTokens() public onlyRole(DEFAULT_ADMIN_ROLE)` permite a cualquier admin transferirse los tokens `BBTKN` que fueron depositados a este contrato.
+* El método llamado `withdrawTokens() public onlyRole(DEFAULT_ADMIN)` permite a cualquier admin transferirse los tokens `BBTKN` que fueron depositados a este contrato.
 
 * Construir un método de ayuda que devuelve el precio dado un id. Este método se llamará `getPriceForId(uint256 id) public view returns(uint256)`. Solo aplica para ids en el rango `0` y `699` (inclusivo).
 
@@ -135,14 +135,14 @@ Para asegurar la conveniencia del usuario y éxito de tu proyecto, has creado un
 
 **De Polygon (`Mumbai`)  a Ethereum (`Goerli`):**
 
-* El sentinel (`Mumbai`) escucha los eventos `Burn` del contrato `NFT`. El autotask ejecuta el script que acuña `10,000 BBTKN` en `Goerli` en el contrato del token `BBTKN`. El relayer (`Goerli`) será el único que puede firmar el método `mint()` para acuñar `BBTKN` a la billetera respectiva. El relayer debe tener el rol de `MINTER_ROLE` para poder acuñar.
+* El sentinel (`Mumbai`) escucha los eventos `Burn` de `Public Sale`. El autotask ejecuta el script que acuña `10,000 BBTKN` en Polygon (`Mumbai`) en el contrato del token `BBTKN`. El relayer (`Goerli`) será el único que puede firmar el método `mint()` para acuñar `BBTKN` a la billetera respectiva. El relayer debe tener el rol de `MINTER_ROLE` para poder acuñar.
 
 ### 6 - IPFS
 
 1. Dentro de la carpeta `ipfs` tenemos dos carpetas: `images` y `metadata`. Estas dos carpetas representan a los activos digitales y la metadata, respectivamente.
 2. Guardar la carpeta de `images` de activos digitales en la aplicación de escritorio `IPFS`. Obtener el `CID` luego de guardar la carpeta `images`.
 3. Dentro de la carpeta de `metadata`, se encontrarán los archivos `json` enumerados de manera secuencial. Cada archivo `json`, representa la metada de un activo digital en particular. Por ejemplo, el archivo `0`, representa la metadata del activo digital `0.png`, guardada en la otra carpeta `images`.
-4. Vamos a modificar los archivos de `metadata`. Por ejemplo, empecemos con `./metadata/0`. Buscar la propiedad `"image": "ipfs://[enter the CID here]/0.png"`. Reemplazar por el valor del `CID` obtenido en el punto 2 para todos los archivos. Usa `ctrl + shift + h`.
+4. Vamos a modificar los archivos de `metadata`. Por ejemplo, empecemos con `./metadata/0`. Buscar la propiedad `"image": "ipfs://QmWJ3udcvB2XjvgWjcn8YrC7w8VEL2VWaUMq1x6Ns4t29k/0.png"`. Reemplazar por el valor del `CID` obtenido en el punto 2 para todos los archivos. Usa `ctrl + shift + h`.
 5. Así también cambia la propiedad `description` y escoge un nombre apropiado para tu colección. Usa `ctrl + shift + h`.
 6. (Opcional) Dado que hay cinco grupos diferentes de NFTs, modificar el atributo `name` de cada archivo `json` para que represente más apropiadamente al grupo de NFT al que pertenece.
 7. (Opcional) Agregar más atributos en la propiedad `attributes`. Seguir la guía/estándar definido en la página de Open Sea que lo puedes encontrar [aquí](https://docs.opensea.io/docs/metadata-standards). Estos atributos serán vistos en la galería de Opean Sea.
@@ -205,7 +205,7 @@ Crear un front-end minimalista para poder interactuar con el contrato de `Public
 3. Contrato de `Public Sale`
 4. Stable Coin `USDC` ficticio
 5. Autotask: `Goerli` a `Mumbai`. Incluye código en `goerliToMumbai.js`.
-6. Autotask: `Mumbai` a `Goerli`. Incluye código en `mumbaiToGoerli.js`.
+6. OZAutotask: `Mumbai` a `Goerli`. Incluye código en `mumbaiToGoerli.js`.
 7. Pool de liquidez en Uniswap V2
 8. Front-end con los métodos implementados del punto `8 - Front-end`
 9. Testing con alta cobertura para `Public Sale`
@@ -215,9 +215,9 @@ Crear un front-end minimalista para poder interactuar con el contrato de `Public
 
 # Completar
 
-1. Pega aquí la tx de una compra de un NFT `común` en `Public Sale` usando `UDSC`:
+1. Pega aquí la tx de una compra de un NFT `común` en `Public Sale` usando `USDC`:
 2. Pega aquí la tx de una compra de un NFT `raro` en `Public Sale` usando `BBTKN`:
-3. Pega aquí la tx de una compra de un NFT `legendario` en `Public Sale` usando `UDSC`:
+3. Pega aquí la tx de una compra de un NFT `legendario` en `Public Sale` usando `USDC`:
 4. Pega aquí la tx de una compra de un NFT `mistico` en `Public Sale` usando `ether` y un `id` en específico:
 5. Pega aquí la tx de una compra de un NFT `mistico` en `Public Sale` usando `ether` (random id):
 6. Pega aquí la tx de una acuñación whitelist de un NFT en el contrato `NFT`:
