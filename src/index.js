@@ -49,7 +49,7 @@ function initSCsGoerli() {
 
   usdcAddress ="0xBD55b237D94f9850faC9452275aA6D43A3aDc615";
   bbitesTknAdd = "0xEa9D31A77F464865371B6a5dEDb960C013588a62";
-  pubSContractAdd = "0x052096c3Ee4e5ab86Fa88Ca8cFEFb132F49c3d2e";
+  pubSContractAdd = "0xc8A7E1e6CE615c2eDE7434bc0dF831D92F640FCF";
    
 
   usdcTkContract = new Contract(usdcAddress, (usdcTknAbi.abi), provider);
@@ -120,10 +120,10 @@ async function setUpListeners() {
 
   // purchaseWithTokens
   var bttn = document.getElementById("purchaseButton");
-  var idInput = document.getElementById("purchaseInput");
+  
   bttn.addEventListener("click", async () => {
-    var id = idInput.value;
-    var purchase = await pubSContract.connect(signer).purchaseWithTokens(id);
+    var idInput = document.getElementById("purchaseInput").value;
+    var purchase = await pubSContract.connect(signer).purchaseWithTokens(idInput);
     console.log(purchase);
   });
 
@@ -158,10 +158,10 @@ async function setUpListeners() {
 
   // getPriceForId
   var bttn = document.getElementById("getPriceNftByIdBttn");
-  var inputId = document.getElementById("priceNftIdInput");
+  
   bttn.addEventListener("click", async () => {
-    var id = inputId.value;
-    var getPrice = await pubSContract.valueNftTokenAndUsdc(id);
+    var inputId = document.getElementById("priceNftIdInput").value;
+    var getPrice = await pubSContract.valueNftTokenAndUsdc(inputId);
     console.log(getPrice);
     var price = document.getElementById("priceNftByIdText");
     price.innerHTML = getPrice;
@@ -181,8 +181,8 @@ async function setUpListeners() {
   bttn.addEventListener("click", async () => {
     var to = document.getElementById("whiteListToInputId").value;
     var tokenId = document.getElementById("whiteListToInputTokenId").value;
-    var proofs = document.getElementById("whiteListProofsId").value;
-    proofs = JSON.parse(proofs).map(ethers.hexlify);
+    var proofsInput = document.getElementById("whiteListProofsId").value;
+    var proofs = JSON.parse(proofsInput).map(ethers.hexlify);
     var safeMintWhiteList = await nftContract.safeMintWhiteList(to, tokenId, proofs);
     console.log(safeMintWhiteList); 
   });
@@ -205,11 +205,9 @@ function setUpEventsContracts() {
   pubSContract.on("PurchaseNftWithId",(account, id) => {
     console.log("account", account);
     console.log("id", id);
+    pubSList.innerHTML =(account, id);
   });
-  pubSContract.on("PurchaseNftWithId",(account, id) => {
-    console.log("account", account);
-    console.log("id", id);
-  });
+  
   
   // pubSContract - "PurchaseNftWithId"
 
@@ -224,6 +222,7 @@ function setUpEventsContracts() {
   nftContract.on("Burn", (account, id) => {
     console.log("accoutn", account);
     console.log("Id", id);
+    burnList.innerHTML =(account, id);
   });
 }
 
@@ -235,7 +234,7 @@ async function setUp() {
   initSCsGoerli();
   initSCsMumbai();
   setUpListeners();
-  // setUpEventsContracts
+  setUpEventsContracts();
   buildMerkleTree();
 
   

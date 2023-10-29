@@ -129,12 +129,12 @@ contract PublicSale is PausableUpgradeable, AccessControlUpgradeable, UUPSUpgrad
     function valueNftTokenAndUsdc(uint256 _id) public view returns (uint256) {
         uint256 valueNft;
         require (_id >= 0 && _id <= 699, "Id NFT invalid.");
-        if (_id >= 0 || _id <= 199) {
+        if (_id >= 0 && _id <= 199) {
             valueNft = 1000 * 10 ** 18;
-        }else if (_id >= 200 || _id <= 499) {
+        }else if (_id >= 200 && _id <= 499) {
             valueNft = _id * (20 * 10 ** 18);
-        }else if (_id >= 500 || _id <= 699) {
-            valueNft = (10000 *10 ** 18 )+ ((block.timestamp - 1696032000)/86400)*2000 * 10 ** 18 ;
+        }else if (_id >= 500 && _id <= 699) {
+            valueNft = (10000 *10 ** 18 ) + ((block.timestamp - 1696032000)/86400)*2000 * 10 ** 18 ;
             if (valueNft > MAX_PRICE_NFT ) {
                 valueNft = MAX_PRICE_NFT;
             }        

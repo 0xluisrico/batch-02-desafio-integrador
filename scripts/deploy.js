@@ -38,25 +38,25 @@ async function deployMumbai() {
 }
 // Publicar UDSC, Public Sale y Bbites Token en Goerli
 async function deployGoerli() {
-  var relAddGoerli ="0xaBCA5f8d0ccB068dA80035da5E8Ee85fd6866304"; // relayer goerli
+  // var relAddGoerli ="0xaBCA5f8d0ccB068dA80035da5E8Ee85fd6866304"; // relayer goerli
   // var psC Contrato
   // deploySC;
   // var bbitesToken Contrato
-  var proxCoBBites = await deploySC("BBitesToken",[]);
-  var proxyAddBBites = await proxCoBBites.getAddress();
-  var impAddBBitesToken = await printAddress("BBitesToken", proxyAddBBites);
-  await ex(proxCoBBites, "grantRole",[MINTER_ROLE, relAddGoerli], "Failed");
-  await verify(impAddBBitesToken, "BBitesToken", []);
+  // var proxCoBBites = await deploySC("BBitesToken",[]);
+  // var proxyAddBBites = await proxCoBBites.getAddress();
+  // var impAddBBitesToken = await printAddress("BBitesToken", proxyAddBBites);
+  // await ex(proxCoBBites, "grantRole",[MINTER_ROLE, relAddGoerli], "Failed");
+  // await verify(impAddBBitesToken, "BBitesToken", []);
 
-  // deploySC;
-  var smartContractUsdc = await deploySCNoUp("USDCoin", []);
-  var usdcAddress = await smartContractUsdc.getAddress();
-  console.log(`Adress contrato USDC ${usdcAddress}`);
-  await verify(usdcAddress, "USDCoin", []);
+  // // deploySC;
+  // var smartContractUsdc = await deploySCNoUp("USDCoin", []);
+  // var usdcAddress = await smartContractUsdc.getAddress();
+  // console.log(`Adress contrato USDC ${usdcAddress}`);
+  // await verify(usdcAddress, "USDCoin", []);
   // deploySC;
   // set up
   // script para verificacion del contrato
-  var proxyContractPS = await deploySC("PublicSale", [proxyAddBBites, usdcAddress]);
+  var proxyContractPS = await deploySC("PublicSale", ["0xEa9D31A77F464865371B6a5dEDb960C013588a62", "0xBD55b237D94f9850faC9452275aA6D43A3aDc615"]);
   await proxyContractPS.getAddress();
   var impPS = await printAddress("PublicSale", await proxyContractPS.getAddress());
   await verify(impPS, "PublicSale", []);
